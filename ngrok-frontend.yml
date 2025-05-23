@@ -1,0 +1,6 @@
+# ./ngrok-frontend.yml
+authtoken: 2xVqc9THqz1eIYZdTdSra9NGnEh_7wPkL3c4b8pp1TzKaR99T
+tunnels:
+  front:
+    proto: http
+    addr: blazorclient:80
