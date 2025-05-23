@@ -16,26 +16,29 @@ else
 {
     <EditForm Model="persona" OnValidSubmit="GuardarCambios">
         <DataAnnotationsValidator />
-        <ValidationSummary />
 
         <div class="mb-3">
             <label class="form-label">Nombre</label>
             <InputText class="form-control" @bind-Value="persona.Nombre" />
+            <ValidationMessage For="@(() => persona.Nombre)" />
         </div>
 
         <div class="mb-3">
             <label class="form-label">Apellido Paterno</label>
             <InputText class="form-control" @bind-Value="persona.ApellidoPaterno" />
+            <ValidationMessage For="@(() => persona.ApellidoPaterno)" />
         </div>
 
         <div class="mb-3">
             <label class="form-label">Apellido Materno</label>
             <InputText class="form-control" @bind-Value="persona.ApellidoMaterno" />
+            <ValidationMessage For="@(() => persona.ApellidoMaterno)" />
         </div>
 
         <div class="mb-3">
             <label class="form-label">Fecha de Nacimiento</label>
             <InputDate class="form-control" @bind-Value="persona.FechaNacimiento" />
+            <ValidationMessage For="@(() => persona.FechaNacimiento)" />
         </div>
 
         <div class="mb-3">
@@ -44,38 +47,43 @@ else
                 <option value="M">Masculino</option>
                 <option value="F">Femenino</option>
             </InputSelect>
+            <ValidationMessage For="@(() => persona.Sexo)" />
         </div>
 
         <button type="submit" class="btn btn-primary">Guardar</button>
         <button type="button" class="btn btn-secondary ms-2" @onclick="Cancelar">Cancelar</button>
     </EditForm>
+
 }
 
 @code {
     [Parameter]
     public int id { get; set; }
 
-    private Person persona = new Person();
+    private RegisterDTO persona = new RegisterDTO()
+    {
+        FechaNacimiento = DateTime.Today.AddYears(-18)
+    };
 
     protected override async Task OnInitializedAsync()
     {
         var personaExistente = await personService.GetPersona(id);
         if (personaExistente != null)
         {
-            persona = personaExistente;
+            persona = new RegisterDTO()
+            {
+                Nombre = personaExistente.Nombre,
+                ApellidoMaterno = personaExistente.ApellidoMaterno,
+                ApellidoPaterno = personaExistente.ApellidoPaterno,
+                FechaNacimiento = personaExistente.FechaNacimiento,
+                Sexo = personaExistente.Sexo
+            };
         }
     }
 
     private async Task GuardarCambios()
     {
-        bool response = await personService.PutPersona(id, new RegisterDTO()
-        {
-            Nombre = persona.Nombre,
-            ApellidoMaterno = persona.ApellidoMaterno,
-            ApellidoPaterno = persona.ApellidoPaterno,
-            FechaNacimiento = persona.FechaNacimiento,
-            Sexo = persona.Sexo
-        });
+        bool response = await personService.PutPersona(id, persona);
         if (response)
         {
             await Swal.FireAsync(new SweetAlertOptions
@@ -84,6 +92,7 @@ else
                 Text = "El usuario ha sido actualizado exitosamente.",
                 Icon = SweetAlertIcon.Success,
             });
+            Navigation.NavigateTo("/");
         }
         else
         {
@@ -94,7 +103,7 @@ else
                 Icon = SweetAlertIcon.Error,
             });
         }
-        Navigation.NavigateTo("/"); // Regresa a la lista principal
+        
     }
 
     private void Cancelar()
