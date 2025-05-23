@@ -1,25 +1,36 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="d-flex">
-    <!-- Navbar lateral fijo -->
-    <nav class="navbar navbar-dark bg-dark flex-column p-3" style="width: 320px; height: 100vh; position: fixed; top: 0; left: 0;">
-        <a class="navbar-brand mb-4" href="">Blazor</a>
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item">
-                <NavLink class="nav-link text-white" href="" Match="NavLinkMatch.All">Inicio</NavLink>
-            </li>
-            <li class="nav-item">
-                <NavLink class="nav-link text-white" href="new">Nuevo Usuario</NavLink>
-            </li>
-            <li class="nav-item">
-                <NavLink class="nav-link text-white" href="pagination">Paginacion</NavLink>
-            </li>
-            <!-- Más enlaces aquí -->
-        </ul>
-    </nav>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar lateral -->
+        <div class="col-sm-auto bg-light sticky-top" style="height: 100vh;">
+            <div class="d-flex flex-sm-column flex-row flex-nowrap bg-light align-items-center sticky-top">
+                <a href="/" class="d-block p-3 link-dark text-decoration-none" title="Inicio">
+                    <i class="bi-people fs-3"></i>
+                </a>
+                <ul class="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-center align-items-center">
+                    <li class="nav-item">
+                        <NavLink class="nav-link py-3 px-2" href="" title="Home" Match="NavLinkMatch.All">
+                            <i class="bi-table fs-3"></i>
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink class="nav-link py-3 px-2" href="new" title="New User">
+                            <i class="bi-person fs-3"></i>
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink class="nav-link py-3 px-2" href="pagination" title="Pagination">
+                            <i class="bi-arrow-left-right fs-3"></i>
+                        </NavLink>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
-    <!-- Contenido principal -->
-    <main style="margin-left: 400px; padding: 20px; width: calc(100% - 400px);">
-        @Body
-    </main>
+        <!-- Contenido principal -->
+        <div class="col-sm p-3 min-vh-100">
+            @Body
+        </div>
+    </div>
 </div>
