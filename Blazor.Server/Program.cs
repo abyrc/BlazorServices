@@ -30,10 +30,17 @@ builder.Services.AddCors(opciones =>
 var app = builder.Build();
 
 // Aquí es donde pones el código para migrar
-using (var scope = app.Services.CreateScope())
+try
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();  // Aplica migraciones pendientes al iniciar
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Database.Migrate();  // Aplica migraciones pendientes al iniciar
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error: {ex.Message}");
 }
 
 // Configure the HTTP request pipeline.
