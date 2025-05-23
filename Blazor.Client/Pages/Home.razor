@@ -1,7 +1,9 @@
 ﻿@page "/"
 @using Blazor.Client.Interfaces
 @using BlazorCRUD.Shared
+@using CurrieTechnologies.Razor.SweetAlert2
 @inject IPersonService personService
+@inject SweetAlertService Swal
 
 <PageTitle>Users</PageTitle>
 
@@ -56,9 +58,38 @@
         Console.WriteLine($"Editar usuario con ID: {id}");
     }
 
-    private void EliminarUsuario(int id)
+    private async Task EliminarUsuario(int id)
     {
-        // Lógica para eliminar un usuario
-        Console.WriteLine($"Eliminar usuario con ID: {id}");
+        var resultado = await Swal.FireAsync(new SweetAlertOptions
+        {
+            Title = "Eliminr Usuario",
+            Text = "¿Estás seguro de que deseas eliminar este usuario?",
+            Icon = SweetAlertIcon.Question,
+            ShowCancelButton = true,
+        });
+
+        if(resultado.IsConfirmed)
+        {
+            var response = await personService.DeletePersona(id);
+            if (response)
+            {
+                await Swal.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Usuario Eliminado",
+                    Text = "El usuario ha sido eliminado exitosamente.",
+                    Icon = SweetAlertIcon.Success,
+                });
+                user = await personService.GetPersonas(); // Refresh the user list
+            }
+            else
+            {
+                await Swal.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Error",
+                    Text = "No se pudo eliminar el usuario.",
+                    Icon = SweetAlertIcon.Error,
+                });
+            }
+        }
     }
 }

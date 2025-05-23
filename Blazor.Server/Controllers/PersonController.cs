@@ -96,15 +96,15 @@ namespace Blazor.Server.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePersona(int id)
+        public async Task<bool> DeletePersona(int id)
         {
             var persona = await _context.Persons.FindAsync(id);
-            if (persona == null) return NotFound();
+            if (persona == null) return false;
 
             _context.Persons.Remove(persona);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return true;
         }
     }
 }

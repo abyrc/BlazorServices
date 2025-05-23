@@ -15,6 +15,14 @@ namespace Blazor.Client.Services
             _httpClient = httpClient;
         }
 
+        public async Task<bool> DeletePersona(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"/api/person/{id}");
+            if (!response.IsSuccessStatusCode) return false;
+            var content = await response.Content.ReadFromJsonAsync<bool>();
+            return content;
+        }
+
         public async Task<List<PersonDTO>> GetPersonas()
         {
             var respuesta = await _httpClient.GetFromJsonAsync<List<PersonDTO>>("/api/person");
