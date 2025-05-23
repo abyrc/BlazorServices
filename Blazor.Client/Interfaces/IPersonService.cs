@@ -6,5 +6,7 @@ namespace Blazor.Client.Interfaces
     {
         Task<List<PersonDTO>> GetPersonas();
         Task<bool> DeletePersona(int id);
+        Task<bool> PutPersona(int id, RegisterDTO persona);
+        Task<Person> GetPersona(int id);
     }
 }

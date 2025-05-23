@@ -4,6 +4,7 @@
 @using CurrieTechnologies.Razor.SweetAlert2
 @inject IPersonService personService
 @inject SweetAlertService Swal
+@inject NavigationManager Navigation
 
 <PageTitle>Users</PageTitle>
 
@@ -54,8 +55,7 @@
 
     private void EditarUsuario(int id)
     {
-        // Lógica para editar un usuario
-        Console.WriteLine($"Editar usuario con ID: {id}");
+        Navigation.NavigateTo($"/edit/{id}");
     }
 
     private async Task EliminarUsuario(int id)

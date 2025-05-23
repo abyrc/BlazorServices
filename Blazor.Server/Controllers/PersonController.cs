@@ -66,18 +66,17 @@ namespace Blazor.Server.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPersona(int id, RegisterDTO persona)
+        public async Task<bool> PutPersona(int id, RegisterDTO persona)
         {
-            var updated = new Person
-            {
-                ID = id,
-                Nombre = persona.Nombre,
-                ApellidoPaterno = persona.ApellidoPaterno,
-                ApellidoMaterno = persona.ApellidoMaterno,
-                FechaNacimiento = persona.FechaNacimiento,
-                Sexo = persona.Sexo
-            };
-            _context.Entry(updated).State = EntityState.Modified;
+            var existing = await _context.Persons.FindAsync(id);
+            if (existing == null)
+                return false;
+
+            existing.Nombre = persona.Nombre;
+            existing.ApellidoPaterno = persona.ApellidoPaterno;
+            existing.ApellidoMaterno = persona.ApellidoMaterno;
+            existing.FechaNacimiento = persona.FechaNacimiento;
+            existing.Sexo = persona.Sexo;
 
             try
             {
@@ -86,13 +85,14 @@ namespace Blazor.Server.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!_context.Persons.Any(e => e.ID == id))
-                    return NotFound();
+                    return false;
                 else
                     throw;
             }
 
-            return NoContent();
+            return true;
         }
+
 
 
         [HttpDelete("{id}")]

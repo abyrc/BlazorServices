@@ -23,11 +23,27 @@ namespace Blazor.Client.Services
             return content;
         }
 
+        public async Task<Person?> GetPersona(int id)
+        {
+            var respuesta = await _httpClient.GetFromJsonAsync<Person>($"/api/person/{id}");
+            return respuesta;
+        }
+
         public async Task<List<PersonDTO>> GetPersonas()
         {
             var respuesta = await _httpClient.GetFromJsonAsync<List<PersonDTO>>("/api/person");
             if (respuesta == null) return new List<PersonDTO>();
             return respuesta;
+        }
+
+        public async Task<bool> PutPersona(int id, RegisterDTO persona)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/person/{id}", persona);
+            if (!response.IsSuccessStatusCode) return false;
+
+            var content = await response.Content.ReadFromJsonAsync<bool>();
+            return content;
+
         }
     }
 }
