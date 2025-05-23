@@ -1,5 +1,4 @@
-﻿using Blazor.Server.Models;
-using BlazorCRUD.Shared;
+﻿using BlazorCRUD.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,7 +44,7 @@ namespace Blazor.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<PersonDTO>> PostPersona(RegisterDTO persona)
         {
-            var newPersona = new Person
+            Person newPersona = new Person()
             {
                 Nombre = persona.Nombre,
                 ApellidoPaterno = persona.ApellidoPaterno,

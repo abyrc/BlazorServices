@@ -1,4 +1,4 @@
-﻿using Blazor.Server.Models;
+﻿using BlazorCRUD.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blazor.Server

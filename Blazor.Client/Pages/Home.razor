@@ -1,0 +1,64 @@
+﻿@page "/"
+@using Blazor.Client.Interfaces
+@using BlazorCRUD.Shared
+@inject IPersonService personService
+
+<PageTitle>Users</PageTitle>
+
+<h3>Lista de Usuarios</h3>
+
+<table class="table table-striped">
+    <thead class="table-dark">
+        <tr>
+            
+            <th>Nombre Completo</th>
+            <th>Fecha de Nacimiento</th>
+            <th>Genero</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (user != null && user.Count > 0)
+        {
+            foreach (var u in user)
+            {
+                <tr>
+                    <td>@u.nombreCompleto</td>
+                    <td>@u.FechaNacimiento.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("es-MX")).ToUpper()</td>
+                    <td>@u.Sexo</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary me-2" @onclick="() => EditarUsuario(u.ID)">Editar</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => EliminarUsuario(u.ID)">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No hay usuarios registrados.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    List<PersonDTO> user = new List<PersonDTO>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await personService.GetPersonas();
+    }
+
+    private void EditarUsuario(int id)
+    {
+        // Lógica para editar un usuario
+        Console.WriteLine($"Editar usuario con ID: {id}");
+    }
+
+    private void EliminarUsuario(int id)
+    {
+        // Lógica para eliminar un usuario
+        Console.WriteLine($"Eliminar usuario con ID: {id}");
+    }
+}
