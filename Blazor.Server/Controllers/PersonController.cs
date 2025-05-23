@@ -18,6 +18,33 @@ namespace Blazor.Server.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("pagination")]
+        public async Task<ActionResult<PagedResponse<PersonDTO>>> GetPersonasPagination(int pageNumber = 1, int pageSize = 10)
+        {
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize < 1) pageSize = 10;
+
+            var totalRecords = await _context.Persons.CountAsync();
+
+            var users = await _context.Persons
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var usersDto = _mapper.Map<List<PersonDTO>>(users);
+
+            var response = new PagedResponse<PersonDTO>
+            {
+                TotalRecords = totalRecords,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Data = usersDto
+            };
+
+            return Ok(response);
+        }
+
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PersonDTO>>> GetPersonas()
         {

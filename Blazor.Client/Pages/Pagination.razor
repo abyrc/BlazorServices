@@ -1,0 +1,80 @@
+﻿@page "/pagination"
+@using Blazor.Client.Interfaces
+@using BlazorCRUD.Shared
+@inject IPersonService personService
+
+<h3>Lista de Usuarios (Paginada)</h3>
+
+@if (pagedResponse == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Nombre Completo</th>
+                <th>Fecha de Nacimiento</th>
+                <th>Genero</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usuario in pagedResponse.Data)
+            {
+                <tr>
+                    <td>@usuario.nombreCompleto</td>
+                    <td>@usuario.FechaNacimiento.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("es-MX")).ToUpper()</td>
+                    <td>@usuario.Sexo</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav>
+        <ul class="pagination">
+            <li class="page-item @(pagedResponse.PageNumber == 1 ? "disabled" : "")">
+                <button class="page-link" @onclick="() => CambiarPagina(pagedResponse.PageNumber - 1)">Anterior</button>
+            </li>
+
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(pagedResponse.PageNumber == i ? "active" : "")">
+                    <button class="page-link" @onclick="() => CambiarPagina(i)">@i</button>
+                </li>
+            }
+
+            <li class="page-item @(pagedResponse.PageNumber == totalPages ? "disabled" : "")">
+                <button class="page-link" @onclick="() => CambiarPagina(pagedResponse.PageNumber + 1)">Siguiente</button>
+            </li>
+        </ul>
+    </nav>
+}
+
+@code {
+    private PagedResponse<PersonDTO> pagedResponse;
+    private int totalPages;
+
+    private int pageSize = 10;
+    private int pageNumber = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarPagina(pageNumber);
+    }
+
+    private async Task CargarPagina(int page)
+    {
+        pageNumber = page;
+        pagedResponse = await personService.GetPersonasPagination(pageNumber, pageSize);
+        totalPages = (int)Math.Ceiling((double)pagedResponse.TotalRecords / pageSize);
+    }
+
+    private async Task CambiarPagina(int page)
+    {
+        if (page < 1 || page > totalPages)
+            return;
+
+        await CargarPagina(page);
+    }
+}
