@@ -1,3 +1,22 @@
 ﻿@inherits LayoutComponentBase
 
-@Body
+<div class="d-flex">
+    <!-- Navbar lateral fijo -->
+    <nav class="navbar navbar-dark bg-dark flex-column p-3" style="width: 320px; height: 100vh; position: fixed; top: 0; left: 0;">
+        <a class="navbar-brand mb-4" href="">Blazor</a>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <NavLink class="nav-link text-white" href="" Match="NavLinkMatch.All">Inicio</NavLink>
+            </li>
+            <li class="nav-item">
+                <NavLink class="nav-link text-white" href="new">Nuevo Usuario</NavLink>
+            </li>
+            <!-- Más enlaces aquí -->
+        </ul>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main style="margin-left: 400px; padding: 20px; width: calc(100% - 400px);">
+        @Body
+    </main>
+</div>
