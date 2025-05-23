@@ -36,6 +36,17 @@ namespace Blazor.Client.Services
             return respuesta;
         }
 
+        public async Task<PersonDTO?> PostPersona(RegisterDTO persona)
+        {
+            var response = await _httpClient.PostAsJsonAsync("/api/person", persona);
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var createdPerson = await response.Content.ReadFromJsonAsync<PersonDTO>();
+            return createdPerson;
+        }
+
         public async Task<bool> PutPersona(int id, RegisterDTO persona)
         {
             var response = await _httpClient.PutAsJsonAsync($"/api/person/{id}", persona);

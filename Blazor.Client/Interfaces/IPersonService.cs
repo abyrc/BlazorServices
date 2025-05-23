@@ -8,5 +8,6 @@ namespace Blazor.Client.Interfaces
         Task<bool> DeletePersona(int id);
         Task<bool> PutPersona(int id, RegisterDTO persona);
         Task<Person> GetPersona(int id);
+        Task<PersonDTO?> PostPersona(RegisterDTO persona);
     }
 }

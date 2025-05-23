@@ -42,26 +42,32 @@ namespace Blazor.Server.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<PersonDTO>> PostPersona(RegisterDTO persona)
+        public async Task<ActionResult<PersonDTO?>> PostPersona(RegisterDTO persona)
         {
-            Person newPersona = new Person()
+            try
             {
-                Nombre = persona.Nombre,
-                ApellidoPaterno = persona.ApellidoPaterno,
-                ApellidoMaterno = persona.ApellidoMaterno,
-                FechaNacimiento = persona.FechaNacimiento,
-                Sexo = persona.Sexo
-            };
-            _context.Persons.Add(newPersona);
-            await _context.SaveChangesAsync();
-            _context.Entry(newPersona).Reload();
-            return new PersonDTO()
-            {
-                ID = newPersona.ID,
-                nombreCompleto = newPersona.Nombre + " " + newPersona.ApellidoPaterno + " " + newPersona.ApellidoMaterno,
-                FechaNacimiento = newPersona.FechaNacimiento,
-                Sexo = newPersona.Sexo
-            };
+                Person newPersona = new Person()
+                {
+                    Nombre = persona.Nombre,
+                    ApellidoPaterno = persona.ApellidoPaterno,
+                    ApellidoMaterno = persona.ApellidoMaterno,
+                    FechaNacimiento = persona.FechaNacimiento,
+                    Sexo = persona.Sexo
+                };
+                _context.Persons.Add(newPersona);
+                await _context.SaveChangesAsync();
+                _context.Entry(newPersona).Reload();
+                return new PersonDTO()
+                {
+                    ID = newPersona.ID,
+                    nombreCompleto = newPersona.Nombre + " " + newPersona.ApellidoPaterno + " " + newPersona.ApellidoMaterno,
+                    FechaNacimiento = newPersona.FechaNacimiento,
+                    Sexo = newPersona.Sexo
+                };
+            }
+            catch (Exception ex) {
+                return null;
+            }
         }
 
 
