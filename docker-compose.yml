@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver-blazor
+    environment:
+      SA_PASSWORD: "TuPasswordFuerte123!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  blazorserver:
+    build:
+      context: .
+      dockerfile: Blazor.Server/Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__Default=Server=sqlserver,1433;Database=blazorWebApi;User Id=sa;Password=TuPasswordFuerte123!;TrustServerCertificate=True;
+
+  blazorclient:
+    build:
+      context: .
+      dockerfile: Blazor.Client/Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - blazorserver
+
+volumes:
+  sql_data:

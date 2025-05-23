@@ -12,12 +12,13 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(opciones =>
 {
-    opciones.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    opciones.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions => sqlOptions.EnableRetryOnFailure());
 }
 
 );
 
-builder.Services.AddCors(opciones => {
+builder.Services.AddCors(opciones =>
+{
     opciones.AddPolicy("nuevaPolitica", app =>
     {
         app.AllowAnyOrigin()
@@ -28,6 +29,13 @@ builder.Services.AddCors(opciones => {
 
 var app = builder.Build();
 
+// Aquí es donde pones el código para migrar
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();  // Aplica migraciones pendientes al iniciar
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -35,7 +43,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blazor V1");
-        c.RoutePrefix = string.Empty;  // <- Aqu� la clave, sirve Swagger UI en /
+        c.RoutePrefix = string.Empty;
     });
 
 }
