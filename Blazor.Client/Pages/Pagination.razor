@@ -1,0 +1,106 @@
+﻿@page "/pagination"
+@using Blazor.Client.Interfaces
+@using BlazorCRUD.Shared
+@inject IPersonService personService
+
+<h3>Lista de Usuarios (Paginada)</h3>
+
+<input class="form-control mb-3" placeholder="Buscar por nombre completo..."
+       value="@filtroTexto"
+       @oninput="OnFiltroChanged"
+       style="width: 250px;" />
+
+
+
+@if (pagedResponse == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Nombre Completo</th>
+                <th>Fecha de Nacimiento</th>
+                <th>Genero</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usuario in pagedResponse.Data)
+            {
+                <tr>
+                    <td>@usuario.nombreCompleto</td>
+                    <td>@usuario.FechaNacimiento.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("es-MX")).ToUpper()</td>
+                    <td>@usuario.Sexo</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav>
+        <ul class="pagination">
+            <li class="page-item @(pagedResponse.PageNumber == 1 ? "disabled" : "")">
+                <button class="page-link" @onclick="() => CambiarPagina(pagedResponse.PageNumber - 1)">Anterior</button>
+            </li>
+
+            <li class="page-item active">
+                <button class="page-link">@pagedResponse.PageNumber</button>
+            </li>
+
+            <li class="page-item @(pagedResponse.PageNumber == totalPages ? "disabled" : "")">
+                <button class="page-link" @onclick="() => CambiarPagina(pagedResponse.PageNumber + 1)">Siguiente</button>
+            </li>
+        </ul>
+    </nav>
+
+}
+
+@code {
+    private string filtroTexto = "";
+    private PagedResponse<PersonDTO> pagedResponse;
+    private int totalPages;
+    private int pageSize = 20;
+    private int pageNumber = 1;
+    private CancellationTokenSource cts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarPagina(pageNumber);
+    }
+
+    private async Task CargarPagina(int page)
+    {
+        pageNumber = page;
+
+        // Cancelar llamada anterior si hay
+        cts.Cancel();
+        cts = new CancellationTokenSource();
+
+        try
+        {
+            pagedResponse = await personService.GetPersonasPagination(pageNumber, pageSize, filtroTexto);
+            totalPages = (int)Math.Ceiling((double)pagedResponse.TotalRecords / pageSize);
+        }
+        catch (OperationCanceledException)
+        {
+            // Ignore si se canceló la llamada anterior
+        }
+    }
+
+    private async Task CambiarPagina(int page)
+    {
+        if (page < 1 || page > totalPages)
+            return;
+
+        await CargarPagina(page);
+    }
+
+    // Detectar cambios en el filtro y resetear página
+    private async Task OnFiltroChanged(ChangeEventArgs e)
+    {
+        filtroTexto = e.Value?.ToString() ?? "";
+        pageNumber = 1;
+        await CargarPagina(pageNumber);
+    }
+}

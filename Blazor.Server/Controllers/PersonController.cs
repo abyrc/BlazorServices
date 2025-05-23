@@ -1,4 +1,5 @@
-﻿using BlazorCRUD.Shared;
+﻿using AutoMapper;
+using BlazorCRUD.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,24 +10,54 @@ namespace Blazor.Server.Controllers
     public class PersonController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public PersonController(AppDbContext context)
+        public PersonController(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
+
+        [HttpGet("pagination")]
+        public async Task<ActionResult> GetPersonasPagination( int pageNumber = 1, int pageSize = 10, string? search = null)
+        {
+            IQueryable<Person> query = _context.Persons;
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(p =>
+                    (p.Nombre + " " + p.ApellidoPaterno + " " + p.ApellidoMaterno)
+                    .Contains(search));
+            }
+
+            var totalRecords = await query.CountAsync();
+
+            var users = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var usersDto = _mapper.Map<List<PersonDTO>>(users);
+
+            var response = new
+            {
+                TotalRecords = totalRecords,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Data = usersDto
+            };
+
+            return Ok(response);
+        }
+
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PersonDTO>>> GetPersonas()
         {
             var users = await _context.Persons.ToListAsync();
-
-            return users.Select(user => new PersonDTO
-            {
-                ID = user.ID,
-                nombreCompleto = user.Nombre + " " + user.ApellidoPaterno + " " + user.ApellidoMaterno,
-                FechaNacimiento = user.FechaNacimiento,
-                Sexo = user.Sexo
-            }).ToList();
+            var usersDto = _mapper.Map<List<PersonDTO>>(users);
+            return usersDto;
         }
 
         [HttpGet("{id}")]
@@ -46,24 +77,12 @@ namespace Blazor.Server.Controllers
         {
             try
             {
-                Person newPersona = new Person()
-                {
-                    Nombre = persona.Nombre,
-                    ApellidoPaterno = persona.ApellidoPaterno,
-                    ApellidoMaterno = persona.ApellidoMaterno,
-                    FechaNacimiento = persona.FechaNacimiento,
-                    Sexo = persona.Sexo
-                };
+                Person newPersona = _mapper.Map<Person>(persona);
                 _context.Persons.Add(newPersona);
                 await _context.SaveChangesAsync();
                 _context.Entry(newPersona).Reload();
-                return new PersonDTO()
-                {
-                    ID = newPersona.ID,
-                    nombreCompleto = newPersona.Nombre + " " + newPersona.ApellidoPaterno + " " + newPersona.ApellidoMaterno,
-                    FechaNacimiento = newPersona.FechaNacimiento,
-                    Sexo = newPersona.Sexo
-                };
+                var resultDto = _mapper.Map<PersonDTO>(newPersona);
+                return resultDto;
             }
             catch (Exception ex) {
                 return null;

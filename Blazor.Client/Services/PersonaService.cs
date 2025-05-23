@@ -36,6 +36,21 @@ namespace Blazor.Client.Services
             return respuesta;
         }
 
+        public async Task<PagedResponse<PersonDTO>> GetPersonasPagination( int pageNumber = 1, int pageSize = 20, string filtro = "")
+        {
+            string url = $"/api/person/pagination?pageNumber={pageNumber}&pageSize={pageSize}&search={Uri.EscapeDataString(filtro)}";
+            var respuesta = await _httpClient.GetFromJsonAsync<PagedResponse<PersonDTO>>(url);
+            return respuesta ?? new PagedResponse<PersonDTO>
+            {
+                TotalRecords = 0,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Data = new List<PersonDTO>()
+            };
+        }
+
+
+
         public async Task<PersonDTO?> PostPersona(RegisterDTO persona)
         {
             var response = await _httpClient.PostAsJsonAsync("/api/person", persona);

@@ -10,6 +10,10 @@
 
 <h3>Lista de Usuarios</h3>
 
+<input class="form-control mb-3" placeholder="Buscar por nombre completo..." @bind="filtroTexto" style="width: 250px;" />
+
+
+
 <table class="table table-striped">
     <thead class="table-dark">
         <tr>
@@ -21,9 +25,9 @@
         </tr>
     </thead>
     <tbody>
-        @if (user != null && user.Count > 0)
+        @if (UsuariosFiltrados != null && UsuariosFiltrados.Any())
         {
-            foreach (var u in user)
+            foreach (var u in UsuariosFiltrados)
             {
                 <tr>
                     <td>@u.nombreCompleto</td>
@@ -47,6 +51,11 @@
 
 @code {
     List<PersonDTO> user = new List<PersonDTO>();
+    private string filtroTexto = "";
+    private IEnumerable<PersonDTO> UsuariosFiltrados =>
+    string.IsNullOrWhiteSpace(filtroTexto)
+        ? user
+        : user.Where(u => u.nombreCompleto.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase));
 
     protected override async Task OnInitializedAsync()
     {
