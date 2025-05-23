@@ -5,6 +5,13 @@
 
 <h3>Lista de Usuarios (Paginada)</h3>
 
+<input class="form-control mb-3" placeholder="Buscar por nombre completo..."
+       value="@filtroTexto"
+       @oninput="OnFiltroChanged"
+       style="width: 250px;" />
+
+
+
 @if (pagedResponse == null)
 {
     <p><em>Cargando...</em></p>
@@ -52,11 +59,12 @@ else
 }
 
 @code {
+    private string filtroTexto = "";
     private PagedResponse<PersonDTO> pagedResponse;
     private int totalPages;
-
     private int pageSize = 10;
     private int pageNumber = 1;
+    private CancellationTokenSource cts = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -66,8 +74,20 @@ else
     private async Task CargarPagina(int page)
     {
         pageNumber = page;
-        pagedResponse = await personService.GetPersonasPagination(pageNumber, pageSize);
-        totalPages = (int)Math.Ceiling((double)pagedResponse.TotalRecords / pageSize);
+
+        // Cancelar llamada anterior si hay
+        cts.Cancel();
+        cts = new CancellationTokenSource();
+
+        try
+        {
+            pagedResponse = await personService.GetPersonasPagination(pageNumber, pageSize, filtroTexto);
+            totalPages = (int)Math.Ceiling((double)pagedResponse.TotalRecords / pageSize);
+        }
+        catch (OperationCanceledException)
+        {
+            // Ignore si se canceló la llamada anterior
+        }
     }
 
     private async Task CambiarPagina(int page)
@@ -76,5 +96,13 @@ else
             return;
 
         await CargarPagina(page);
+    }
+
+    // Detectar cambios en el filtro y resetear página
+    private async Task OnFiltroChanged(ChangeEventArgs e)
+    {
+        filtroTexto = e.Value?.ToString() ?? "";
+        pageNumber = 1;
+        await CargarPagina(pageNumber);
     }
 }

@@ -19,21 +19,27 @@ namespace Blazor.Server.Controllers
         }
 
         [HttpGet("pagination")]
-        public async Task<ActionResult<PagedResponse<PersonDTO>>> GetPersonasPagination(int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult> GetPersonasPagination( int pageNumber = 1, int pageSize = 10, string? search = null)
         {
-            if (pageNumber < 1) pageNumber = 1;
-            if (pageSize < 1) pageSize = 10;
+            IQueryable<Person> query = _context.Persons;
 
-            var totalRecords = await _context.Persons.CountAsync();
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(p =>
+                    (p.Nombre + " " + p.ApellidoPaterno + " " + p.ApellidoMaterno)
+                    .Contains(search));
+            }
 
-            var users = await _context.Persons
+            var totalRecords = await query.CountAsync();
+
+            var users = await query
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
             var usersDto = _mapper.Map<List<PersonDTO>>(users);
 
-            var response = new PagedResponse<PersonDTO>
+            var response = new
             {
                 TotalRecords = totalRecords,
                 PageNumber = pageNumber,
@@ -43,6 +49,7 @@ namespace Blazor.Server.Controllers
 
             return Ok(response);
         }
+
 
 
         [HttpGet]

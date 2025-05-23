@@ -9,6 +9,6 @@ namespace Blazor.Client.Interfaces
         Task<bool> PutPersona(int id, RegisterDTO persona);
         Task<Person> GetPersona(int id);
         Task<PersonDTO?> PostPersona(RegisterDTO persona);
-        Task<PagedResponse<PersonDTO>> GetPersonasPagination(int pageNumber = 1, int pageSize = 10);
+        Task<PagedResponse<PersonDTO>> GetPersonasPagination(int pageNumber = 1, int pageSize = 10, string filtro = "");
     }
 }
