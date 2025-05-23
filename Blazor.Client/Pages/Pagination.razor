@@ -44,25 +44,23 @@ else
                 <button class="page-link" @onclick="() => CambiarPagina(pagedResponse.PageNumber - 1)">Anterior</button>
             </li>
 
-            @for (int i = 1; i <= totalPages; i++)
-            {
-                <li class="page-item @(pagedResponse.PageNumber == i ? "active" : "")">
-                    <button class="page-link" @onclick="() => CambiarPagina(i)">@i</button>
-                </li>
-            }
+            <li class="page-item active">
+                <button class="page-link">@pagedResponse.PageNumber</button>
+            </li>
 
             <li class="page-item @(pagedResponse.PageNumber == totalPages ? "disabled" : "")">
                 <button class="page-link" @onclick="() => CambiarPagina(pagedResponse.PageNumber + 1)">Siguiente</button>
             </li>
         </ul>
     </nav>
+
 }
 
 @code {
     private string filtroTexto = "";
     private PagedResponse<PersonDTO> pagedResponse;
     private int totalPages;
-    private int pageSize = 10;
+    private int pageSize = 20;
     private int pageNumber = 1;
     private CancellationTokenSource cts = new();
 

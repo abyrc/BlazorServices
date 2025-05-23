@@ -32,7 +32,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blazor V1");
+        c.RoutePrefix = string.Empty;  // <- Aquí la clave, sirve Swagger UI en /
+    });
+
 }
 app.UseCors("nuevaPolitica");
 app.UseAuthorization();
