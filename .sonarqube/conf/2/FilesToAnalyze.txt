@@ -1,0 +1,17 @@
+﻿D:\Repositorios\Blazor\BlazorServices\Blazor.Server\AppDbContext.cs
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\Config\MappingProfile.cs
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\Controllers\PersonController.cs
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\Controllers\SeedController.cs
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\Migrations\20250523030053_InitialCreate.cs
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\Migrations\20250523030053_InitialCreate.Designer.cs
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\Migrations\AppDbContextModelSnapshot.cs
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\Program.cs
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\obj\Debug\net8.0\Blazor.Server.GlobalUsings.g.cs
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\obj\Debug\net8.0\Blazor.Server.AssemblyInfo.cs
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\obj\Debug\net8.0\Blazor.Server.MvcApplicationPartsAssemblyInfo.cs
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\wwwroot\app.css
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\appsettings.Development.json
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\appsettings.json
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\Dockerfile
+D:\Repositorios\Blazor\BlazorServices\Blazor.Server\Properties\launchSettings.json

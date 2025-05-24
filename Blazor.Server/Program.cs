@@ -1,5 +1,7 @@
 using Blazor.Server;
 using Blazor.Server.Config;
+using Blazor.Server.UseCases.Interfaces;
+using Blazor.Server.UseCases.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +18,8 @@ builder.Services.AddDbContext<AppDbContext>(opciones =>
 }
 
 );
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IGeminiUseCase, GeminiUseCase>();
 
 builder.Services.AddCors(opciones =>
 {

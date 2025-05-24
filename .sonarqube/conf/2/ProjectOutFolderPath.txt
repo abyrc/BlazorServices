@@ -1,0 +1,1 @@
+D:\Repositorios\Blazor\BlazorServices\.sonarqube\out\2
