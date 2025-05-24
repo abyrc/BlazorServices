@@ -1,0 +1,6 @@
+# ./ngrok-backend.yml
+authtoken: 2xVqc9THqz1eIYZdTdSra9NGnEh_7wPkL3c4b8pp1TzKaR99T
+tunnels:
+  api:
+    proto: http
+    addr: blazorserver:5000
